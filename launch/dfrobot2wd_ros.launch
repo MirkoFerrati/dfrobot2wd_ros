@@ -1,0 +1,7 @@
+<launch>
+    
+  <node pkg="dfrobot_2wd" type="dfrobot_2wd_node" name="$(anon dfrobot_2wd_node)" required="true" output="screen">
+    <param name="robot_name" value="MotorControl_$(optenv ROS_ROBOT_NAME red_blue)" />
+  </node>
+
+</launch>
