@@ -7,6 +7,8 @@
 
 int main ( int argc, char** argv )
 {
+    ros::init(argc, argv, "dfrobot_2wd");
+  
     //TODO ros param robot name
     std::string robot_name;
     ros::NodeHandle l_node("~");
@@ -22,7 +24,6 @@ int main ( int argc, char** argv )
   
     robot_name = "/"+robot_name+"/cmd_vel";
   
-    ros::init(argc,argv,robot_name);
     ros_real_world_serial_communicator comm(robot_name);
     ros::spin();
     return 0;
