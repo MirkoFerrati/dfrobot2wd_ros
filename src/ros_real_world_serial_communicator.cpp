@@ -23,7 +23,7 @@ ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::stri
 {
     sub = nh.subscribe<geometry_msgs::Twist>(agent_name,1,&ros_real_world_serial_communicator::cmd_callback,this);
     //TODO use ros param to get the portname
-    string portname="/dev/ttyACM0";
+    string portname="/dev/ttyAMA0";
     fd = open (portname.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
     {
@@ -43,6 +43,7 @@ ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::stri
 
 void ros_real_world_serial_communicator::cmd_callback(const geometry_msgs::Twist::ConstPtr& cmd)
 {
+  ROS_INFO("New Command Received: Linear %.4f, Angular %.4f\n", cmd->linear.x, cmd->angular.z);
   send_control_command(cmd->linear.x,cmd->angular.z);
 }
 
