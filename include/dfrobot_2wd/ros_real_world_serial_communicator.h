@@ -15,7 +15,7 @@
 class ros_real_world_serial_communicator
 {
 public:
-    ros_real_world_serial_communicator(std::string agent_name);
+    ros_real_world_serial_communicator(std::string agent_name, std::string portname = "/dev/ttyACM0");
     void send_control_command( double v, double w);
 
     ~ros_real_world_serial_communicator();

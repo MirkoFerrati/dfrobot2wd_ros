@@ -19,11 +19,9 @@ int64_t get_tick_count()
 #define CLEAR_AVERAGE_TIMING(s) timeTally_##s = 0; countTally_##s = 0
 
 
-ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::string agent_name)
+ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::string agent_name, std::string portname)
 {
     sub = nh.subscribe<geometry_msgs::Twist>(agent_name,1,&ros_real_world_serial_communicator::cmd_callback,this);
-    //TODO use ros param to get the portname
-    string portname="/dev/ttyACM0";
     fd = open (portname.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
     {
