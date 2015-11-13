@@ -23,7 +23,7 @@ ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::stri
 {
     sub = nh.subscribe<geometry_msgs::Twist>(agent_name,1,&ros_real_world_serial_communicator::cmd_callback,this);
     //TODO use ros param to get the portname
-    string portname="/dev/ttyAMA0";
+    string portname="/dev/ttyACM0";
     fd = open (portname.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
     {
@@ -43,7 +43,7 @@ ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::stri
 
 void ros_real_world_serial_communicator::cmd_callback(const geometry_msgs::Twist::ConstPtr& cmd)
 {
-  ROS_INFO("New Command Received: Linear %.4f, Angular %.4f\n", cmd->linear.x, cmd->angular.z);
+  ROS_INFO("Command Received: Linear %.4f, Angular %.4f\n", cmd->linear.x, cmd->angular.z);
   send_control_command(cmd->linear.x,cmd->angular.z);
 }
 
@@ -62,9 +62,9 @@ void ros_real_world_serial_communicator::set_blocking(int fd, int should_block)
 
     if (tcsetattr (fd, TCSANOW, &tty) != 0)
         ROS_ERROR("error %d setting term attributes", errno);
-
+    
+    ROS_INFO("Blocking is activated!\n");
 }
-
 
 
 int ros_real_world_serial_communicator::set_interface_attribs(int fd, int speed, int parity)
@@ -104,6 +104,9 @@ int ros_real_world_serial_communicator::set_interface_attribs(int fd, int speed,
         ROS_ERROR("error %d from tcsetattr", errno);
         return -1;
     }
+    
+    ROS_INFO("Interface Attributes are set!\n");
+    
     return 0;
 
 }
