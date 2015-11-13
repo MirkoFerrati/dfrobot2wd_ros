@@ -29,7 +29,7 @@ int main ( int argc, char** argv )
     }
     else
     {
-      l_port_name="/det/ttyACM0";
+      l_port_name="/dev/ttyACM0";
       ROS_INFO("Port name NOT received: %s", l_port_name.c_str());
     }
     l_robot_name = "/"+l_robot_name+"/cmd_vel";
