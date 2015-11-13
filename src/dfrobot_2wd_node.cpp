@@ -9,7 +9,6 @@ int main ( int argc, char** argv )
 {
     ros::init(argc, argv, "dfrobot_2wd");
   
-    //TODO ros param robot name
     std::string l_robot_name;
     ros::NodeHandle l_node("~");
     if (l_node.getParam("robot_name", l_robot_name))
@@ -33,6 +32,9 @@ int main ( int argc, char** argv )
       ROS_INFO("Port name NOT received: %s", l_port_name.c_str());
     }
     l_robot_name = "/"+l_robot_name+"/cmd_vel";
+    
+    ROS_INFO("Subscribe to: %s", l_robot_name.c_str());
+    
     ros_real_world_serial_communicator comm(l_robot_name, l_port_name);
     ros::spin();
     return 0;

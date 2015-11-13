@@ -21,6 +21,9 @@ int64_t get_tick_count()
 
 ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::string agent_name, std::string portname)
 {
+    ROS_INFO("Subscribe to: %s", agent_name.c_str());
+    ROS_INFO("Publish on: %s", portname.c_str());
+  
     sub = nh.subscribe<geometry_msgs::Twist>(agent_name,1,&ros_real_world_serial_communicator::cmd_callback,this);
     fd = open (portname.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0)
