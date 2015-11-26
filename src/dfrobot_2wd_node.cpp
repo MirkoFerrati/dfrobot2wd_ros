@@ -33,8 +33,6 @@ int main ( int argc, char** argv )
     }
     l_robot_name = "/"+l_robot_name+"/cmd_vel";
     
-    ROS_INFO("Subscribe to: %s", l_robot_name.c_str());
-    
     ros_real_world_serial_communicator comm(l_robot_name, l_port_name);
     ros::spin();
     return 0;
