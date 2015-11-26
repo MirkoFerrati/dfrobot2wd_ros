@@ -10,7 +10,6 @@
 // # Note: You should connect the GND pin from the DF-MD v1.3 to your MCU controller. They should share the GND pins.
 // #
 
-
 #include "CmdMessenger.h"
 #include "motor_control.h"
 #include <string.h>
@@ -27,10 +26,10 @@
 #define w_max 10
 
 volatile int coder[2] = {0,0};
-int lastSpeed[2] = {0,0};  
+int lastSpeed[2] = {0,0};
 
 char field_separator = ',';
-char command_separator = ';';         
+char command_separator = ';';
 
 int ledPin = 13;
 
@@ -85,7 +84,7 @@ messengerCallbackFunction messengerCallbacks[] =
 
 // ------------------ C A L L B A C K  M E T H O D S -------------------------
 
-
+//////////////////////////////
 void gest_motors()
 {
   // Message data is any ASCII bytes (0-255 value). But can't contain the field
@@ -99,12 +98,14 @@ void gest_motors()
     }
 }
 
-
+//////////////////////////////
 void stop_motors()
 { 
-        ferma();
+  ferma();
+  Serial.println("Command stop_motors");
 }
 
+//////////////////////////////
 void led_blinking()
 {
   double time_on, time_off;
@@ -131,59 +132,67 @@ void led_blinking()
 	digitalWrite(13, LOW);
 	delay(10*time_off);	
   	
-	//Serial.print("Command EXECUTED:");
-    //Serial.print(time_on);
-    //Serial.print(",");
-    //Serial.println(time_off);
-	}	
+	Serial.print("Command led_blinking:");
+        Serial.print(time_on);
+        Serial.print(",");
+        Serial.println(time_off);
+  }	
 }
  
+//////////////////////////////
 void v2pwm_cmd()
 {
-    
-	if ( cmdMessenger.available() )
+    if ( cmdMessenger.available() )
     {
       time_last_cmd=millis();
-		double v = get_v();
-		double w = get_w();
-        vw2pwm(v,w);
+      double v = get_v();
+      double w = get_w();
+      vw2pwm(v,w);
+      
+      Serial.println("Command v2pwm_cmd");
     }
 } 
  
  // ------------------  M E T H O D S -------------------------
 
-void set_pwm(int value_left,int value_right){
+//////////////////////////////
+void set_pwm(int value_left,int value_right)
+{
 	digitalWrite(M2,HIGH); 
 	if (value_left <0)
-		digitalWrite(M2,LOW);
+	  digitalWrite(M2,LOW);
+
 	digitalWrite(M1,LOW);
 	if (value_right <0)
-                digitalWrite(M1,HIGH);
+          digitalWrite(M1,HIGH);
 	
- 	analogWrite(E2, abs(value_left));
-      	analogWrite(E1, abs(value_right));
+ 	analogWrite( E2, abs(value_left) );
+	analogWrite( E1, abs(value_right) );
 
-    //  Serial.print("Command EXECUTED:");
-    //  Serial.print(value_right);
-    //  Serial.print(",");
-    //  Serial.println(value_left);
+        Serial.print("Command set_pwm:");
+        Serial.print(value_right);
+        Serial.print(",");
+        Serial.println(value_left);
 }
 
-
-void ferma(){
+//////////////////////////////
+void ferma()
+{
   analogWrite(E1, 0);  
   analogWrite(E2, 0);
-//  Serial.println("Command EXECUTED: STOP");
+  Serial.println("Command ferma");
 }
 
-
-int pwm_serial(){
+//////////////////////////////
+int pwm_serial()
+{
        int pwm_cur; 
        pwm_cur= pwm_default;
-       if (cmdMessenger.available()){
-         char buf[350] = { '\0' };
-        cmdMessenger.copyString(buf, 350); 
-        pwm_cur=atoi(buf);
+       if (cmdMessenger.available())
+       {
+          char buf[350] = { '\0' };
+          cmdMessenger.copyString(buf, 350); 
+          pwm_cur=atoi(buf);
        }
        if (pwm_cur< -pwm_default)
        pwm_cur= -pwm_default;
@@ -191,55 +200,71 @@ int pwm_serial(){
 	if (pwm_cur > pwm_default)
        pwm_cur= pwm_default;
 
+       Serial.println("Command pwm_serial");
        return pwm_cur;
 }
 
+//////////////////////////
 void LwheelSpeed()
 {
   coder[LEFT]++;  //count the left wheel encoder interrupts
+  Serial.print("Command LwheelSpeed:");
+  Serial.println(coder[LEFT]);
 }
 
-
+//////////////////////////
 void RwheelSpeed()
 {
   coder[RIGHT]++; //count the right wheel encoder interrupts
+  Serial.print("Command RwheelSpeed:");
+  Serial.println(coder[RIGHT]);
 }  
 
-
-double get_v(){
-       double v; 
-       v = 0;
-       if (cmdMessenger.available()){
-			char buf[350] = { '\0' };
-			cmdMessenger.copyString(buf, 350); 
-			v=atof(buf);
-       }
-       if (v < v_min)
-		v = v_min;
+//////////////////////////
+double get_v()
+{
+  double v; 
+  v = 0;
+  if (cmdMessenger.available())
+  {
+    char buf[350] = { '\0' };
+    cmdMessenger.copyString(buf, 350); 
+    v=atof(buf);
+  }
+  if (v < v_min)
+    v = v_min;
 	
-	if (v > v_max)
-       v= v_max;
+  if (v > v_max)
+    v= v_max;
 
-       return v;
+  Serial.print("Command get_v:");
+  Serial.println(v);
+  return v;
 }
 
-double get_w(){
-       double w; 
-       w = 0;
-       if (cmdMessenger.available()){
-			char buf[350] = { '\0' };
-			cmdMessenger.copyString(buf, 350); 
-			w=atof(buf);
-       }
-       if (w < w_min)
+//////////////////////////
+double get_w()
+{
+   double w; 
+   w = 0;
+   if (cmdMessenger.available())
+   {
+     char buf[350] = { '\0' };
+     cmdMessenger.copyString(buf, 350); 
+     w=atof(buf);
+   }
+   if (w < w_min)
 		w = w_min;
 	
 	if (w > w_max)
-       w= w_max;
+   w= w_max;
 
-       return w;
+  Serial.print("Command get_w:");
+  Serial.println(w);
+  return w;
 }
 
+//////////////////////////////
 void vw2pwm (double v, double w)
 {
 	double b = 0.09;
@@ -249,6 +274,7 @@ void vw2pwm (double v, double w)
 	v2pwm(vl, vr) ;
 }
 
+//////////////////////////////
 void v2pwm(double vl, double vr)
 {
 	int vl_sign = vl>0 ? 1 : -1;
@@ -300,6 +326,7 @@ void v2pwm(double vl, double vr)
 
 // ------------------ D E F A U L T  C A L L B A C K S -----------------------
 
+//////////////////////////////
 void arduino_ready()
 {
   // In response to ping. We just send a throw-away Acknowledgement to say "im alive"
@@ -318,6 +345,7 @@ void unknownCmd()
 
 // ------------------ S E T U P ----------------------------------------------
 
+//////////////////////////////
 void attach_callbacks(messengerCallbackFunction* callbacks)
 {
   int i = 0;
@@ -329,6 +357,7 @@ void attach_callbacks(messengerCallbackFunction* callbacks)
   }
 }
 
+//////////////////////////////
 void setup() 
 {
   // Listen on serial connection for messages from the pc
@@ -365,6 +394,7 @@ void setup()
 
 // ------------------ M A I N ( ) --------------------------------------------
 
+//////////////////////////////
 void loop() 
 {
   // Process incoming serial data, if any
@@ -374,25 +404,25 @@ void loop()
   if(time_last_cmd!=0)
   if (now - time_last_cmd > 500)
   {
-        stop_motors();
-        Serial.print(now - time_last_cmd);
-        Serial.print(" - ");
-        time_last_cmd=0;
+    stop_motors();
+    Serial.print(now - time_last_cmd);
+    Serial.print(" - ");
+    time_last_cmd=0;
   }
   
   cmdMessenger.feedinSerialData();
 
-  //if( ((millis() - timer) > Tprint) && prn_enc==1 ){                   
-    //Serial.print("Elapsed time: ");
-    //Serial.print(millis()-timer);    
+  if( ((millis() - timer) > Tprint) && prn_enc==1 ){                   
+    Serial.print("Elapsed time: ");
+    Serial.println(millis()-timer);
 
-//    lastSpeed[LEFT] = coder[LEFT];   //record the latest speed value
- //   lastSpeed[RIGHT] = coder[RIGHT];
-  //  coder[LEFT] = 0;                 //clear the data buffer
-  //  coder[RIGHT] = 0;
-    //timer = millis();
-    //delay(10);
-  //}
+    lastSpeed[LEFT] = coder[LEFT];   //record the latest speed value
+    lastSpeed[RIGHT] = coder[RIGHT];
+    coder[LEFT] = 0;                 //clear the data buffer
+    coder[RIGHT] = 0;
+    timer = millis();
+    delay(10);
+  }
   // Loop.
 }
 
