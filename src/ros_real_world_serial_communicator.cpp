@@ -44,7 +44,7 @@ ros_real_world_serial_communicator::ros_real_world_serial_communicator(std::stri
 
 void ros_real_world_serial_communicator::cmd_callback(const geometry_msgs::Twist::ConstPtr& cmd)
 {
-  ROS_INFO("Command Received: Linear %.4f, Angular %.4f\n", cmd->linear.x, cmd->angular.z);
+  ROS_INFO("Linear %.4f, Angular %.4f\n", cmd->linear.x, cmd->angular.z);
   send_control_command(cmd->linear.x,cmd->angular.z);
 }
 
