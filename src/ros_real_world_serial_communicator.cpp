@@ -64,7 +64,7 @@ void ros_real_world_serial_communicator::set_blocking(int fd, int should_block)
     if (tcsetattr (fd, TCSANOW, &tty) != 0)
         ROS_ERROR("error %d setting term attributes", errno);
     
-    ROS_INFO("Blocking is activated!\n");
+    ROS_INFO("Blocking is activated!");
 }
 
 
@@ -106,7 +106,7 @@ int ros_real_world_serial_communicator::set_interface_attribs(int fd, int speed,
         return -1;
     }
     
-    ROS_INFO("Interface Attributes are set!\n");
+    ROS_INFO("Interface Attributes are set!");
     
     return 0;
 
